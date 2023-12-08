@@ -4,9 +4,9 @@
 	<groupId>org.sentrysoftware</groupId>
 	<artifactId>ssh</artifactId>
 	<name>SSH Java Client</name>
-	<version>0.1.00-SNAPSHOT</version>
+	<version>1.0.00-SNAPSHOT</version>
 	<description>SSH Cilent Library for Java</description>
-  <packaging>jar</packaging>
+	<packaging>jar</packaging>
 
 	<organization>
 		<name>Sentry Software</name>
@@ -46,7 +46,7 @@
 		<tag>HEAD</tag>
 	</scm>
 
-<developers>
+	<developers>
 		<developer>
 			<name>Bertrand Martin (@bertysentry)</name>
 			<email>bertrand@sentrysoftware.com</email>

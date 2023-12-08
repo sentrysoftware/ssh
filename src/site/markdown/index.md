@@ -17,7 +17,7 @@ Add SSH in the list of dependencies in your [Maven **pom.xml**](https://maven.ap
 	<dependency>
 		<groupId>org.sentrysoftware</groupId>
 		<artifactId>ssh</artifactId>
-		<version>1.0.00-SNAPSHOT</version> <!-- Use the latest version released -->
+		<version>${project.version}</version>
 	</dependency>
 </dependencies>
 ```
@@ -42,18 +42,18 @@ public class Main {
 
 		// In seconds
 		final int timeout = 120; 
-		
+
 		// Language
 		final Charset charset = Utils.getCharsetFromLocale("en");
 
 		// Specify a private key file for the authentication if required
 		final File keyfile = null;
-		
+
 		// Specify the command to execute
 		final String command = "echo test";
 
 		try (final SshClient sshClient = new SshClient(hostname, charset)) {
-			
+
 			sshClient.connect(timeout * 1000);
 			
 			final boolean authenticated;
@@ -68,9 +68,9 @@ public class Main {
 			if (!authenticated) {
 				throw new IllegalStateException(String.format("Error: Failed to authenticate as %s on %s", username, hostname));
 			}
-			
+
 			final CommandResult commandResult = sshClient.executeCommand(command, timeout * 1000);
-			
+
 			if (commandResult.success) {
 
 				// Success
@@ -84,7 +84,7 @@ public class Main {
 				// Failure
 				System.err.format("Execution failed: %s%n", commandResult.result);
 			}
-		}	
+		}
 	}
 
 }

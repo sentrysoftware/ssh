@@ -34,6 +34,8 @@ import java.nio.charset.UnsupportedCharsetException;
  */
 public class Utils {
 
+	private Utils() { }
+
 	/**
 	 * Returns the proper Charset that can decode/encode the specified locale
 	 * 
