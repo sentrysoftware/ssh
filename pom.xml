@@ -3,7 +3,7 @@
 
 	<groupId>org.sentrysoftware</groupId>
 	<artifactId>ssh</artifactId>
-	<name>SSH Java client</name>
+	<name>SSH Java Client</name>
 	<version>0.1.00-SNAPSHOT</version>
 	<description>SSH Cilent Library for Java</description>
   <packaging>jar</packaging>
