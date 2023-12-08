@@ -1,11 +1,13 @@
-# oss-maven-template
+# SSH Java Client
 
-![GitHub release (with filter)](https://img.shields.io/github/v/release/sentrysoftware/oss-maven-template)
-![Build](https://img.shields.io/github/actions/workflow/status/sentrysoftware/oss-maven-template/deploy.yml)
-![GitHub top language](https://img.shields.io/github/languages/top/sentrysoftware/oss-maven-template)
-![License](https://img.shields.io/github/license/sentrysoftware/oss-maven-template)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/sentrysoftware/ssh)
+![Build](https://img.shields.io/github/actions/workflow/status/sentrysoftware/ssh/deploy.yml)
+![GitHub top language](https://img.shields.io/github/languages/top/sentrysoftware/ssh)
+![License](https://img.shields.io/github/license/sentrysoftware/ssh)
 
-Repository template for all Sentry open-source Java projects, published on Maven Central.
+The SSH Java client is a library that allows to execute commands using SSH protocol in distant hosts.
+
+See **[Project Documentation](https://sentrysoftware.github.io/ssh)** and the [Javadoc](https://sentrysoftware.github.io/ssh/apidocs) for more information on how to use this library in your code.
 
 ## Build instructions
 
