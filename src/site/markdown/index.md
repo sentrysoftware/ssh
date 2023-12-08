@@ -1,6 +1,11 @@
 # SSH Java Client
 
-The SSH Java Client allows you to perform basic SSH operations.
+The SSH Java Client enables you to execute basic SSH operations, including:
+
+* Initializing the SSH Client
+* Establishing a secure connection to a remote server
+* Running commands on the remote server
+* Conducting file transfers between local and remote machines through SCP
 
 ## How to run the SSH Client inside Java
 
@@ -20,12 +25,13 @@ Add SSH in the list of dependencies in your [Maven **pom.xml**](https://maven.ap
 Invoke the SSH Client:
 
 ```java
-	import java.io.File;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import com.sentrysoftware.matsya.Utils;
-import com.sentrysoftware.matsya.ssh.SSHClient.CommandResult;
+import org.sentrysoftware.ssh.SshClient;
+import org.sentrysoftware.ssh.Utils;
+import org.sentrysoftware.ssh.SshClient.CommandResult;
 
 public class Main {
 
@@ -46,7 +52,7 @@ public class Main {
 		// Specify the command to execute
 		final String command = "echo test";
 
-		try (final SSHClient sshClient = new SSHClient(hostname, charset)) {
+		try (final SshClient sshClient = new SshClient(hostname, charset)) {
 			
 			sshClient.connect(timeout * 1000);
 			
@@ -78,10 +84,7 @@ public class Main {
 				// Failure
 				System.err.format("Execution failed: %s%n", commandResult.result);
 			}
-		}
-		
-		
-		
+		}	
 	}
 
 }

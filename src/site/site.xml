@@ -9,7 +9,7 @@
 
 	<custom>
 		<noDefaultLinks>true</noDefaultLinks>
-		<keywords>open source,oss, ssh</keywords>
+		<keywords>ssh</keywords>
 	</custom>
 
 	<bannerLeft>
@@ -21,7 +21,6 @@
 
 		<links>
 			<item name="Fork on GitHub" href="${project.scm.url}" />
-			<!-- <item name="First Link" href="https://sentrysoftware.com" /> -->
 		</links>
 
 		<menu name="User Documentation">

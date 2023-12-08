@@ -2,7 +2,7 @@ package org.sentrysoftware.ssh;
 
 /*-
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
- * MY PROJECT
+ * SSH Java Client
  * ჻჻჻჻჻჻
  * Copyright 2023 Sentry Software
  * ჻჻჻჻჻჻

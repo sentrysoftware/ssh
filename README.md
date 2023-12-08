@@ -5,7 +5,7 @@
 ![GitHub top language](https://img.shields.io/github/languages/top/sentrysoftware/ssh)
 ![License](https://img.shields.io/github/license/sentrysoftware/ssh)
 
-The SSH Java client is a library that allows to execute commands using SSH protocol in distant hosts.
+See **[Project Documentation](https://sentrysoftware.github.io/ssh)** and the [Javadoc](https://sentrysoftware.github.io/ssh/apidocs) for more information on how to use this library in your code.
 
 ## Build instructions
 
@@ -33,10 +33,6 @@ But it is strongly recommended to only use [GitHub Actions "Release to Maven Cen
 
 License is Apache-2. Each source file must include the Apache-2 header (build will fail otherwise).
 To update source files with the proper header, simply execute the below command:
-
-```bash
-mvn license:update-file-header
-```
 
 ## Run SSH Client inside Java
 
