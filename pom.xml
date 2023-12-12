@@ -4,7 +4,7 @@
 	<groupId>org.sentrysoftware</groupId>
 	<artifactId>ssh</artifactId>
 	<name>SSH Java Client</name>
-	<version>1.0.00-SNAPSHOT</version>
+	<version>1.1.00-SNAPSHOT</version>
 	<description>SSH Cilent Library for Java</description>
 	<packaging>jar</packaging>
 
@@ -89,7 +89,7 @@
 
 		<!-- Reproducible Build -->
 		<!-- See https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
-		<project.build.outputTimestamp>2023-10-25T22:28:48Z</project.build.outputTimestamp>
+		<project.build.outputTimestamp>2023-12-08T16:19:33Z</project.build.outputTimestamp>
 	</properties>
 
 	<dependencyManagement>
