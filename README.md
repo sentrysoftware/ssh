@@ -7,7 +7,7 @@
 
 The SSH Java client is a library that allows to execute commands using SSH protocol in distant hosts.
 
-See **[Project Documentation](https://sentrysoftware.github.io/ssh)** and the [Javadoc](https://sentrysoftware.github.io/ssh/apidocs) for more information on how to use this library in your code.
+See **[Project Documentation](https://sentrysoftware.org/ssh)** and the [Javadoc](https://sentrysoftware.org/ssh/apidocs) for more information on how to use this library in your code.
 
 ## Build instructions
 
