@@ -118,13 +118,24 @@ public class SshClient implements AutoCloseable {
 	}
 
 	/**
-	 * Connects the SSH Client to the SSH server
-
+	 * Connects the SSH client to the SSH server using the default SSH port (22).
+	 *
 	 * @param timeout Timeout in milliseconds
 	 * @throws IOException when connection fails or when the server does not respond (SocketTimeoutException)
 	 */
-	public void connect(int timeout) throws IOException {
-		sshConnection = new Connection(hostname);
+	public void connect(final int timeout) throws IOException {
+		this.connect(timeout, 22);
+	}
+
+	/**
+	 *  Connects the SSH client to the SSH server using a specified SSH port.
+	 *
+	 * @param timeout Timeout in milliseconds
+	 * @param port SSH server port.
+	 * @throws IOException when connection fails or when the server does not respond (SocketTimeoutException)
+	 */
+	public void connect(final int timeout, final int port) throws IOException {
+		sshConnection = new Connection(hostname, port);
 		sshConnection.connect(null, timeout, timeout);
 	}
 
