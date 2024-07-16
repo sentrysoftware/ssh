@@ -10,7 +10,7 @@
 	<groupId>org.sentrysoftware</groupId>
 	<artifactId>ssh</artifactId>
 	<name>SSH Java Client</name>
-	<version>1.0.02</version>
+	<version>1.0.03-SNAPSHOT</version>
 	<description>SSH Cilent Library for Java</description>
 
 	<organization>
@@ -37,7 +37,7 @@
 	<scm>
 		<connection>scm:git:https://github.com/sentrysoftware/ssh.git</connection>
 		<url>https://github.com/sentrysoftware/ssh</url>
-		<tag>v1.0.02</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<developers>
@@ -78,7 +78,7 @@
 
 		<!-- Reproducible Build -->
 		<!-- See https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
-		<project.build.outputTimestamp>2024-07-16T15:12:51Z</project.build.outputTimestamp>
+		<project.build.outputTimestamp>2024-07-16T15:13:36Z</project.build.outputTimestamp>
 	</properties>
 
 	<dependencyManagement>
