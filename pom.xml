@@ -10,7 +10,7 @@
 	<groupId>org.sentrysoftware</groupId>
 	<artifactId>ssh</artifactId>
 	<name>SSH Java Client</name>
-	<version>1.0.02-SNAPSHOT</version>
+	<version>1.0.03-SNAPSHOT</version>
 	<description>SSH Cilent Library for Java</description>
 
 	<organization>
@@ -78,7 +78,7 @@
 
 		<!-- Reproducible Build -->
 		<!-- See https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
-		<project.build.outputTimestamp>2024-01-26T12:56:33Z</project.build.outputTimestamp>
+		<project.build.outputTimestamp>2024-07-16T15:13:36Z</project.build.outputTimestamp>
 	</properties>
 
 	<dependencyManagement>
@@ -86,7 +86,7 @@
 			<dependency>
 				<groupId>org.junit</groupId>
 				<artifactId>junit-bom</artifactId>
-				<version>5.10.1</version>
+				<version>5.10.3</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
