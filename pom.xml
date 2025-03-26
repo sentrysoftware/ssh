@@ -18,7 +18,7 @@
 		<url>https://metricsHub.com</url>
 	</organization>
 
-	<url>https://metricsHub.org/ssh</url>
+	<url>https://metricsHub.org/ssh-java</url>
 	<inceptionYear>2023</inceptionYear>
 
 	<licenses>
@@ -31,12 +31,12 @@
 
 	<issueManagement>
 		<system>GitHub</system>
-		<url>https://github.com/metricsHub/ssh/issues/</url>
+		<url>https://github.com/metricsHub/ssh-java/issues/</url>
 	</issueManagement>
 
 	<scm>
-		<connection>scm:git:https://github.com/metricsHub/ssh.git</connection>
-		<url>https://github.com/metricsHub/ssh</url>
+		<connection>scm:git:https://github.com/metricsHub/ssh-java.git</connection>
+		<url>https://github.com/metricsHub/ssh-java</url>
 		<tag>HEAD</tag>
 	</scm>
 
