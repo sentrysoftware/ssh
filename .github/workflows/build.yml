@@ -1,11 +1,8 @@
 name: Maven Build
 
 on:
-  # Run on all PRs to "main" (update to include the protected branches of your repository)
   pull_request:
     branches: [ "main" ]
-
-  # Run the workflow manually
   workflow_dispatch:
     inputs:
       debug:
@@ -18,22 +15,6 @@ on:
         description: Open SSH session in the runner
         required: false
         default: false
-      uploadCheckstyleReport:
-        type: boolean
-        description: Upload Checkstyle report created by Maven
-        required: false
-        default: true
-      uploadPMDReport:
-        type: boolean
-        description: Upload PMD report created by Maven
-        required: false
-        default: true
-      uploadSpotbugsReport:
-        type: boolean
-        description: Upload Spotbugs report created by Maven
-        required: false
-        default: true
-
 jobs:
   build:
     uses: metricshub/workflows/.github/workflows/maven-build.yml@v1
@@ -42,6 +23,3 @@ jobs:
       nodeVersion: "20.x"
       debug: ${{ github.event_name == 'workflow_dispatch' && inputs.debug }}
       ssh: ${{ github.event_name == 'workflow_dispatch' && inputs.ssh }}
-      uploadCheckstyleReport: ${{ inputs.uploadCheckstyleReport }}
-      uploadPMDReport: ${{ inputs.uploadPMDReport }}
-      uploadSpotbugsReport: ${{ inputs.uploadSpotbugsReport }}
