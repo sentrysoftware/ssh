@@ -3,13 +3,13 @@
  * and open the template in the editor.
  */
 
-package org.sentrysoftware.ssh;
+package org.metricshub.ssh;
 
 /*-
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SSH Java Client
  * ჻჻჻჻჻჻
- * Copyright (C) 2023 Sentry Software
+ * Copyright (C) 2023 Metricshub
  * ჻჻჻჻჻჻
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -515,7 +515,7 @@ public class SshClient implements AutoCloseable {
 		// Close the SFTP client
 		sftpClient.close();
 
-		// Sentry Collection format
+		// Metricshub Collection format
 		return out.toString();
 	}
 
