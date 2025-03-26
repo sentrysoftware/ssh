@@ -1,13 +1,13 @@
 # SSH Java Client
 
-![GitHub release (with filter)](https://img.shields.io/github/v/release/metricshub/ssh)
-![Build](https://img.shields.io/github/actions/workflow/status/metricshub/ssh/deploy.yml)
-![GitHub top language](https://img.shields.io/github/languages/top/metricshub/ssh)
-![License](https://img.shields.io/github/license/metricshub/ssh)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/metricshub/ssh-java)
+![Build](https://img.shields.io/github/actions/workflow/status/metricshub/ssh-java/deploy.yml)
+![GitHub top language](https://img.shields.io/github/languages/top/metricshub/ssh-java)
+![License](https://img.shields.io/github/license/metricshub/ssh-java)
 
 The SSH Java client is a library that allows to execute commands using SSH protocol in distant hosts.
 
-See **[Project Documentation](https://metricshub.org/ssh)** and the [Javadoc](https://metricshub.org/ssh/apidocs) for more information on how to use this library in your code.
+See **[Project Documentation](https://metricshub.org/ssh-java)** and the [Javadoc](https://metricshub.org/ssh-java/apidocs) for more information on how to use this library in your code.
 
 ## Build instructions
 
