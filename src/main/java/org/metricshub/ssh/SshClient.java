@@ -305,14 +305,15 @@ public class SshClient implements AutoCloseable {
 
 		// Determine the file type
 		String fileType;
-		if (fileAttributes.isRegularFile())
+		if (fileAttributes.isRegularFile()) {
 			fileType = "FILE";
-		else if (fileAttributes.isDirectory())
+		} else if (fileAttributes.isDirectory()) {
 			fileType = "DIR";
-		else if (fileAttributes.isSymlink())
+		} else if (fileAttributes.isSymlink()) {
 			fileType = "LINK";
-		else
+		} else {
 			fileType = "UNKNOWN";
+		}
 
 		// Build the result in the same format as the PSL function file()
 		StringBuilder pslFileResult = new StringBuilder();
