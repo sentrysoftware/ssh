@@ -1,4 +1,4 @@
-package org.sentrysoftware.ssh;
+package org.metricshub.ssh;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

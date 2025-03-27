@@ -15,7 +15,7 @@ Add SSH in the list of dependencies in your [Maven **pom.xml**](https://maven.ap
 <dependencies>
 	<!-- [...] -->
 	<dependency>
-		<groupId>org.sentrysoftware</groupId>
+		<groupId>org.metricshub</groupId>
 		<artifactId>ssh</artifactId>
 		<version>${project.version}</version>
 	</dependency>
@@ -29,9 +29,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import org.sentrysoftware.ssh.SshClient;
-import org.sentrysoftware.ssh.Utils;
-import org.sentrysoftware.ssh.SshClient.CommandResult;
+import org.metricshub.ssh.SshClient;
+import org.metricshub.ssh.Utils;
+import org.metricshub.ssh.SshClient.CommandResult;
 
 public class Main {
 

@@ -1,10 +1,10 @@
-package org.sentrysoftware.ssh;
+package org.metricshub.ssh;
 
 /*-
  * ╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲
  * SSH Java Client
  * ჻჻჻჻჻჻
- * Copyright 2023 Sentry Software
+ * Copyright 2023 Metricshub
  * ჻჻჻჻჻჻
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
