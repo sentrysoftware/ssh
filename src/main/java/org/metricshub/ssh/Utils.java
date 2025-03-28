@@ -25,7 +25,6 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.StandardCharsets;
 import java.nio.charset.UnsupportedCharsetException;
 
-
 /**
  * Utility Class (static), to be used anywhere in  Matsya, including in
  * standalone JARs (in CLI mode)
@@ -34,17 +33,16 @@ import java.nio.charset.UnsupportedCharsetException;
  */
 public class Utils {
 
-	private Utils() { }
+	private Utils() {}
 
 	/**
 	 * Returns the proper Charset that can decode/encode the specified locale
-	 * 
+	 *
 	 * @param locale The locale we're dealing with, as formatted in the LANG environment variable (e.g. zh_CN.utf8)
 	 * @param defaultCharset The default Charset to use if the specified locale doesn't match any supported Charset
 	 * @return The appropriate Charset instance
 	 */
 	public static Charset getCharsetFromLocale(final String locale, final Charset defaultCharset) {
-
 		// What charset will we be dealing with coming from and going to the PATROL Agent
 		Charset charset = defaultCharset;
 		if (locale != null && !locale.isEmpty()) {
@@ -57,7 +55,7 @@ public class Utils {
 						if ("gb".equalsIgnoreCase(charsetName)) {
 							charsetName = "GBK";
 						}
-   						try {
+						try {
 							charset = Charset.forName(charsetName);
 						} catch (IllegalCharsetNameException | UnsupportedCharsetException e) {
 							/* Unfortunately, there is nothing we can do here, as debug is not even set yet */
@@ -65,7 +63,7 @@ public class Utils {
 					}
 				}
 			}
-	 	}
+		}
 
 		return charset;
 	}
@@ -73,7 +71,7 @@ public class Utils {
 	/**
 	 * Returns the proper Charset that can decode/encode the specified locale, or UTF-8 if specified locale
 	 * cannot be converted to a Charset.
-	 * 
+	 *
 	 * @param locale The locale we're dealing with, as formatted in the LANG environment variable (e.g. zh_CN.utf8)
 	 * @return The appropriate Charset instance
 	 */
@@ -94,7 +92,6 @@ public class Utils {
 		}
 	}
 
-
 	/**
 	 * Check if the required argument is not negative or zero.
 	 *
@@ -107,6 +104,4 @@ public class Utils {
 			throw new IllegalArgumentException(String.format("%s=%d must not be negative or zero.", name, argument));
 		}
 	}
-
-
 }

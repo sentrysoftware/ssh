@@ -1,17 +1,15 @@
 package org.metricshub.ssh;
 
+import com.trilead.ssh2.ChannelCondition;
+import com.trilead.ssh2.Connection;
+import com.trilead.ssh2.Session;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
 import java.util.Optional;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import com.trilead.ssh2.ChannelCondition;
-import com.trilead.ssh2.Connection;
-import com.trilead.ssh2.Session;
 
 class SSHClientTest {
 
@@ -20,10 +18,10 @@ class SSHClientTest {
 
 	@Test
 	void testTransferBytesCopy() throws Exception {
-
-		try (final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(TEXT.getBytes());
-				final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-
+		try (
+			final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(TEXT.getBytes());
+			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
+		) {
 			Assertions.assertEquals(1, SshClient.transferBytes(byteArrayInputStream, byteArrayOutputStream, 1));
 			Assertions.assertEquals("H", byteArrayOutputStream.toString());
 
@@ -37,16 +35,18 @@ class SSHClientTest {
 			Assertions.assertEquals(TEXT, byteArrayOutputStream.toString());
 		}
 
-		try (final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(TEXT.getBytes());
-				final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-
+		try (
+			final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(TEXT.getBytes());
+			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
+		) {
 			Assertions.assertEquals(TEXT.length(), SshClient.transferBytes(byteArrayInputStream, byteArrayOutputStream, 0));
 			Assertions.assertEquals(TEXT, byteArrayOutputStream.toString());
 		}
 
-		try (final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(TEXT.getBytes());
-				final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-
+		try (
+			final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(TEXT.getBytes());
+			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
+		) {
 			Assertions.assertEquals(TEXT.length(), SshClient.transferBytes(byteArrayInputStream, byteArrayOutputStream, -1));
 			Assertions.assertEquals(TEXT, byteArrayOutputStream.toString());
 		}
@@ -54,10 +54,10 @@ class SSHClientTest {
 
 	@Test
 	void testTransferAllBytes() throws Exception {
-
-		try (final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(TEXT.getBytes());
-				final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-
+		try (
+			final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(TEXT.getBytes());
+			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
+		) {
 			Assertions.assertEquals(TEXT.length(), SshClient.transferAllBytes(byteArrayInputStream, byteArrayOutputStream));
 			Assertions.assertEquals(TEXT, byteArrayOutputStream.toString());
 		}
@@ -65,7 +65,7 @@ class SSHClientTest {
 
 	@Test
 	void testCheckIfConnected() {
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Assertions.assertThrows(IllegalStateException.class, () -> sshClient.checkIfConnected());
 
 			Mockito.doReturn(Mockito.mock(Connection.class)).when(sshClient).getSshConnection();
@@ -77,8 +77,7 @@ class SSHClientTest {
 	void testCheckIfAuthenticated() {
 		final Connection sshConnection = Mockito.mock(Connection.class);
 
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
-
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(false).when(sshConnection).isAuthenticationComplete();
 
@@ -91,8 +90,7 @@ class SSHClientTest {
 
 	@Test
 	void testCheckIfSessionOpened() {
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
-
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Assertions.assertThrows(IllegalStateException.class, () -> sshClient.checkIfSessionOpened());
 
 			Mockito.doReturn(Mockito.mock(Session.class)).when(sshClient).getSshSession();
@@ -102,49 +100,58 @@ class SSHClientTest {
 
 	@Test
 	void testHasTimeoutSession() {
-		Assertions.assertFalse(SshClient.hasTimeoutSession(ChannelCondition.STDOUT_DATA | ChannelCondition.EOF | ChannelCondition.CLOSED));
-		Assertions.assertTrue(SshClient.hasTimeoutSession(ChannelCondition.STDOUT_DATA |ChannelCondition.TIMEOUT));
+		Assertions.assertFalse(
+			SshClient.hasTimeoutSession(ChannelCondition.STDOUT_DATA | ChannelCondition.EOF | ChannelCondition.CLOSED)
+		);
+		Assertions.assertTrue(SshClient.hasTimeoutSession(ChannelCondition.STDOUT_DATA | ChannelCondition.TIMEOUT));
 	}
 
 	@Test
 	void testHasEndOfFileSession() {
-		Assertions.assertFalse(SshClient.hasEndOfFileSession(ChannelCondition.STDOUT_DATA | ChannelCondition.TIMEOUT | ChannelCondition.CLOSED));
+		Assertions.assertFalse(
+			SshClient.hasEndOfFileSession(ChannelCondition.STDOUT_DATA | ChannelCondition.TIMEOUT | ChannelCondition.CLOSED)
+		);
 		Assertions.assertTrue(SshClient.hasEndOfFileSession(ChannelCondition.STDOUT_DATA | ChannelCondition.EOF));
 	}
 
 	@Test
 	void testHasSessionClosed() {
-		Assertions.assertFalse(SshClient.hasSessionClosed(ChannelCondition.STDOUT_DATA | ChannelCondition.TIMEOUT | ChannelCondition.EOF));
+		Assertions.assertFalse(
+			SshClient.hasSessionClosed(ChannelCondition.STDOUT_DATA | ChannelCondition.TIMEOUT | ChannelCondition.EOF)
+		);
 		Assertions.assertTrue(SshClient.hasSessionClosed(ChannelCondition.STDOUT_DATA | ChannelCondition.CLOSED));
 	}
 
 	@Test
 	void testHasStdoutData() {
-		Assertions.assertFalse(SshClient.hasStdoutData(ChannelCondition.STDERR_DATA | ChannelCondition.TIMEOUT | ChannelCondition.EOF));
+		Assertions.assertFalse(
+			SshClient.hasStdoutData(ChannelCondition.STDERR_DATA | ChannelCondition.TIMEOUT | ChannelCondition.EOF)
+		);
 		Assertions.assertTrue(SshClient.hasStdoutData(ChannelCondition.STDOUT_DATA | ChannelCondition.CLOSED));
 	}
 
 	@Test
 	void testHasStderrData() {
-		Assertions.assertFalse(SshClient.hasStderrData(ChannelCondition.STDOUT_DATA | ChannelCondition.TIMEOUT | ChannelCondition.EOF));
+		Assertions.assertFalse(
+			SshClient.hasStderrData(ChannelCondition.STDOUT_DATA | ChannelCondition.TIMEOUT | ChannelCondition.EOF)
+		);
 		Assertions.assertTrue(SshClient.hasStderrData(ChannelCondition.STDERR_DATA | ChannelCondition.CLOSED));
 	}
 
 	@Test
 	void testOpenSession() throws Exception {
-
 		final Connection sshConnection = Mockito.mock(Connection.class);
 		final Session sshSession = Mockito.mock(Session.class);
 
 		// Case not Connected
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.verify(sshClient, Mockito.never()).checkIfAuthenticated();
 
 			Assertions.assertThrows(IllegalStateException.class, () -> sshClient.openSession());
 		}
 
 		// Case not authenticate
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(false).when(sshConnection).isAuthenticationComplete();
 
@@ -152,7 +159,7 @@ class SSHClientTest {
 		}
 
 		// Case OK
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 			Mockito.doReturn(sshSession).when(sshConnection).openSession();
@@ -165,12 +172,11 @@ class SSHClientTest {
 
 	@Test
 	void testOpenTerminal() throws Exception {
-
 		final Connection sshConnection = Mockito.mock(Connection.class);
 		final Session sshSession = Mockito.mock(Session.class);
 
 		// Case not Connected
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.verify(sshClient, Mockito.never()).checkIfAuthenticated();
 			Mockito.verify(sshClient, Mockito.never()).checkIfSessionOpened();
 
@@ -178,7 +184,7 @@ class SSHClientTest {
 		}
 
 		// Case not authenticate
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(false).when(sshConnection).isAuthenticationComplete();
 
@@ -188,7 +194,7 @@ class SSHClientTest {
 		}
 
 		// case Session not opened
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
@@ -196,11 +202,11 @@ class SSHClientTest {
 		}
 
 		// Case OK
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 			Mockito.doReturn(sshSession).when(sshClient).getSshSession();
-			Mockito.doNothing().when(sshSession).requestPTY("dumb", 10000, 24, 640, 480, new byte[] {53, 0, 0, 0, 0, 0});
+			Mockito.doNothing().when(sshSession).requestPTY("dumb", 10000, 24, 640, 480, new byte[] { 53, 0, 0, 0, 0, 0 });
 			Mockito.doNothing().when(sshSession).startShell();
 
 			sshClient.openTerminal();
@@ -209,11 +215,10 @@ class SSHClientTest {
 
 	@Test
 	void testWrite() throws Exception {
-
 		final Connection sshConnection = Mockito.mock(Connection.class);
 		final Session sshSession = Mockito.mock(Session.class);
 
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.verify(sshClient, Mockito.never()).checkIfConnected();
 			Mockito.verify(sshClient, Mockito.never()).checkIfAuthenticated();
 			Mockito.verify(sshClient, Mockito.never()).checkIfSessionOpened();
@@ -221,7 +226,7 @@ class SSHClientTest {
 			sshClient.write(null);
 		}
 
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.verify(sshClient, Mockito.never()).checkIfConnected();
 			Mockito.verify(sshClient, Mockito.never()).checkIfAuthenticated();
 			Mockito.verify(sshClient, Mockito.never()).checkIfSessionOpened();
@@ -230,7 +235,7 @@ class SSHClientTest {
 		}
 
 		// Case not Connected
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.verify(sshClient, Mockito.never()).checkIfAuthenticated();
 			Mockito.verify(sshClient, Mockito.never()).checkIfSessionOpened();
 
@@ -238,7 +243,7 @@ class SSHClientTest {
 		}
 
 		// Case not authenticate
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(false).when(sshConnection).isAuthenticationComplete();
 
@@ -247,7 +252,7 @@ class SSHClientTest {
 		}
 
 		// case Session not opened
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
@@ -255,7 +260,7 @@ class SSHClientTest {
 		}
 
 		// case charset = null
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME, (Charset) null))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME, (Charset) null))) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
@@ -265,7 +270,7 @@ class SSHClientTest {
 		}
 
 		// case stdin = null
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
@@ -275,9 +280,10 @@ class SSHClientTest {
 		}
 
 		// case OK
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
-				final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-
+		try (
+			final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
+			final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()
+		) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
@@ -292,18 +298,17 @@ class SSHClientTest {
 
 	@Test
 	void testRead() throws Exception {
-
 		final Connection sshConnection = Mockito.mock(Connection.class);
 		final Session sshSession = Mockito.mock(Session.class);
 
 		// case timeout 0 or negative
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Assertions.assertThrows(IllegalArgumentException.class, () -> sshClient.read(1, 0));
 			Assertions.assertThrows(IllegalArgumentException.class, () -> sshClient.read(1, -1));
 		}
 
 		// Case not Connected
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.verify(sshClient, Mockito.never()).checkIfAuthenticated();
 			Mockito.verify(sshClient, Mockito.never()).checkIfSessionOpened();
 
@@ -311,7 +316,7 @@ class SSHClientTest {
 		}
 
 		// Case not authenticate
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(false).when(sshConnection).isAuthenticationComplete();
 
@@ -320,7 +325,7 @@ class SSHClientTest {
 		}
 
 		// case Session not opened
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
@@ -328,7 +333,7 @@ class SSHClientTest {
 		}
 
 		// case charset = null
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME, (Charset) null))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME, (Charset) null))) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
@@ -338,7 +343,7 @@ class SSHClientTest {
 		}
 
 		// case stdout = null
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
+		try (final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME))) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
@@ -348,9 +353,10 @@ class SSHClientTest {
 		}
 
 		// case stderr = null
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
-				final ByteArrayInputStream stdout = new ByteArrayInputStream(TEXT.getBytes())) {
-
+		try (
+			final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
+			final ByteArrayInputStream stdout = new ByteArrayInputStream(TEXT.getBytes())
+		) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
@@ -361,10 +367,11 @@ class SSHClientTest {
 		}
 
 		// case timeout
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
-				final ByteArrayInputStream stdout = new ByteArrayInputStream(TEXT.getBytes());
-				final ByteArrayInputStream stderr = new ByteArrayInputStream("".getBytes())) {
-
+		try (
+			final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
+			final ByteArrayInputStream stdout = new ByteArrayInputStream(TEXT.getBytes());
+			final ByteArrayInputStream stderr = new ByteArrayInputStream("".getBytes())
+		) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
@@ -377,10 +384,11 @@ class SSHClientTest {
 		}
 
 		// case session closed
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
-				final ByteArrayInputStream stdout = new ByteArrayInputStream(TEXT.getBytes());
-				final ByteArrayInputStream stderr = new ByteArrayInputStream("".getBytes())) {
-
+		try (
+			final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
+			final ByteArrayInputStream stdout = new ByteArrayInputStream(TEXT.getBytes());
+			final ByteArrayInputStream stderr = new ByteArrayInputStream("".getBytes())
+		) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
@@ -393,10 +401,11 @@ class SSHClientTest {
 		}
 
 		// case EOF
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
-				final ByteArrayInputStream stdout = new ByteArrayInputStream(TEXT.getBytes());
-				final ByteArrayInputStream stderr = new ByteArrayInputStream("".getBytes())) {
-
+		try (
+			final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
+			final ByteArrayInputStream stdout = new ByteArrayInputStream(TEXT.getBytes());
+			final ByteArrayInputStream stderr = new ByteArrayInputStream("".getBytes())
+		) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
@@ -409,10 +418,11 @@ class SSHClientTest {
 		}
 
 		// case read 1 byte from Stout
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
-				final ByteArrayInputStream stdout = new ByteArrayInputStream(TEXT.getBytes());
-				final ByteArrayInputStream stderr = new ByteArrayInputStream("".getBytes())) {
-
+		try (
+			final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
+			final ByteArrayInputStream stdout = new ByteArrayInputStream(TEXT.getBytes());
+			final ByteArrayInputStream stderr = new ByteArrayInputStream("".getBytes())
+		) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
@@ -425,10 +435,11 @@ class SSHClientTest {
 		}
 
 		// case read 1 byte from Stderr
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
-				final ByteArrayInputStream stdout = new ByteArrayInputStream("".getBytes());
-				final ByteArrayInputStream stderr = new ByteArrayInputStream("Err".getBytes())) {
-
+		try (
+			final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
+			final ByteArrayInputStream stdout = new ByteArrayInputStream("".getBytes());
+			final ByteArrayInputStream stderr = new ByteArrayInputStream("Err".getBytes())
+		) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
@@ -441,26 +452,31 @@ class SSHClientTest {
 		}
 
 		// case read Stdout + 3 bytes from Stderr
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
-				final ByteArrayInputStream stdout = new ByteArrayInputStream(TEXT.getBytes());
-				final ByteArrayInputStream stderr = new ByteArrayInputStream("Error".getBytes())) {
-
+		try (
+			final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
+			final ByteArrayInputStream stdout = new ByteArrayInputStream(TEXT.getBytes());
+			final ByteArrayInputStream stderr = new ByteArrayInputStream("Error".getBytes())
+		) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
 			Mockito.doReturn(sshSession).when(sshClient).getSshSession();
 			Mockito.doReturn(stdout).when(sshSession).getStdout();
 			Mockito.doReturn(stderr).when(sshSession).getStderr();
-			Mockito.doReturn(ChannelCondition.STDOUT_DATA | ChannelCondition.STDERR_DATA).when(sshClient).waitForNewData(5000L);
+			Mockito
+				.doReturn(ChannelCondition.STDOUT_DATA | ChannelCondition.STDERR_DATA)
+				.when(sshClient)
+				.waitForNewData(5000L);
 
 			Assertions.assertEquals(Optional.of("Hello WorldErr"), sshClient.read(TEXT.length() + 3, 5));
 		}
 
 		// case read all only Stdout
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
-				final ByteArrayInputStream stdout = new ByteArrayInputStream(TEXT.getBytes());
-				final ByteArrayInputStream stderr = new ByteArrayInputStream("".getBytes())) {
-
+		try (
+			final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
+			final ByteArrayInputStream stdout = new ByteArrayInputStream(TEXT.getBytes());
+			final ByteArrayInputStream stderr = new ByteArrayInputStream("".getBytes())
+		) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
@@ -473,10 +489,11 @@ class SSHClientTest {
 		}
 
 		// case read all only Stderr
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
-				final ByteArrayInputStream stdout = new ByteArrayInputStream("".getBytes());
-				final ByteArrayInputStream stderr = new ByteArrayInputStream("Error".getBytes())) {
-
+		try (
+			final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
+			final ByteArrayInputStream stdout = new ByteArrayInputStream("".getBytes());
+			final ByteArrayInputStream stderr = new ByteArrayInputStream("Error".getBytes())
+		) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
@@ -489,17 +506,21 @@ class SSHClientTest {
 		}
 
 		// case read All Stdout and Stderr
-		try(final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
-				final ByteArrayInputStream stdout = new ByteArrayInputStream(TEXT.getBytes());
-				final ByteArrayInputStream stderr = new ByteArrayInputStream("Error".getBytes())) {
-
+		try (
+			final SshClient sshClient = Mockito.spy(new SshClient(HOSTNAME));
+			final ByteArrayInputStream stdout = new ByteArrayInputStream(TEXT.getBytes());
+			final ByteArrayInputStream stderr = new ByteArrayInputStream("Error".getBytes())
+		) {
 			Mockito.doReturn(sshConnection).when(sshClient).getSshConnection();
 			Mockito.doReturn(true).when(sshConnection).isAuthenticationComplete();
 
 			Mockito.doReturn(sshSession).when(sshClient).getSshSession();
 			Mockito.doReturn(stdout).when(sshSession).getStdout();
 			Mockito.doReturn(stderr).when(sshSession).getStderr();
-			Mockito.doReturn(ChannelCondition.STDOUT_DATA | ChannelCondition.STDERR_DATA).when(sshClient).waitForNewData(5000L);
+			Mockito
+				.doReturn(ChannelCondition.STDOUT_DATA | ChannelCondition.STDERR_DATA)
+				.when(sshClient)
+				.waitForNewData(5000L);
 
 			Assertions.assertEquals(Optional.of("Hello WorldError"), sshClient.read(0, 5));
 		}
