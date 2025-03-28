@@ -25,6 +25,15 @@ package org.metricshub.ssh;
  * ╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱╲╱
  */
 
+import com.trilead.ssh2.ChannelCondition;
+import com.trilead.ssh2.Connection;
+import com.trilead.ssh2.InteractiveCallback;
+import com.trilead.ssh2.SCPClient;
+import com.trilead.ssh2.SFTPv3Client;
+import com.trilead.ssh2.SFTPv3DirectoryEntry;
+import com.trilead.ssh2.SFTPv3FileAttributes;
+import com.trilead.ssh2.SFTPv3FileHandle;
+import com.trilead.ssh2.Session;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -38,17 +47,6 @@ import java.util.Optional;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.trilead.ssh2.ChannelCondition;
-import com.trilead.ssh2.Connection;
-import com.trilead.ssh2.InteractiveCallback;
-import com.trilead.ssh2.SCPClient;
-import com.trilead.ssh2.SFTPv3Client;
-import com.trilead.ssh2.SFTPv3DirectoryEntry;
-import com.trilead.ssh2.SFTPv3FileAttributes;
-import com.trilead.ssh2.SFTPv3FileHandle;
-import com.trilead.ssh2.Session;
-
 
 /**
  * SSH Client that lets you perform basic SSH operations
@@ -173,7 +171,6 @@ public class SshClient implements AutoCloseable {
 		}
 	}
 
-
 	/**
 	 * Authenticate the SSH Client against the SSH server using a private key
 	 *
@@ -187,9 +184,10 @@ public class SshClient implements AutoCloseable {
 	@Deprecated
 	public boolean authenticate(String username, String privateKeyFile, String password) throws IOException {
 		return authenticate(
-				username,
-				privateKeyFile != null ? new File(privateKeyFile) : null,
-				password != null ? password.toCharArray() : null);
+			username,
+			privateKeyFile != null ? new File(privateKeyFile) : null,
+			password != null ? password.toCharArray() : null
+		);
 	}
 
 	/**
@@ -202,12 +200,12 @@ public class SshClient implements AutoCloseable {
 	 * @throws IOException
 	 */
 	public boolean authenticate(String username, File privateKeyFile, char[] password) throws IOException {
-
 		if (sshConnection.isAuthMethodAvailable(username, "publickey")) {
 			return sshConnection.authenticateWithPublicKey(
-					username,
-					privateKeyFile,
-					password != null ? String.valueOf(password) : null);
+				username,
+				privateKeyFile,
+				password != null ? String.valueOf(password) : null
+			);
 		}
 
 		return false;
@@ -236,37 +234,45 @@ public class SshClient implements AutoCloseable {
 	 * @throws IOException
 	 */
 	public boolean authenticate(String username, char[] password) throws IOException {
-
 		// Is the "password" method available? If yes, try it first
 		// Using normal login & password
-		if (sshConnection.isAuthMethodAvailable(username, "password") &&
-				sshConnection.authenticateWithPassword(username, password != null ? String.valueOf(password) : null)) {
+		if (
+			sshConnection.isAuthMethodAvailable(username, "password") &&
+			sshConnection.authenticateWithPassword(username, password != null ? String.valueOf(password) : null)
+		) {
 			return true;
 		}
 
 		// Now, is the "keyboard-interactive" method available?
 		if (sshConnection.isAuthMethodAvailable(username, "keyboard-interactive")) {
-			return sshConnection.authenticateWithKeyboardInteractive(username, new InteractiveCallback() {
-
-				@Override
-				public String[] replyToChallenge(String name, String instruction, int numPrompts, String[] prompt, boolean[] echo) throws Exception {
-
-					// Prepare responses to the challenges
-					String[] challengeResponse = new String[numPrompts];
-					for (int i = 0; i < numPrompts; i++) {
-						// If we're told the input can be displayed (echoed),
-						// we'll assume this is not a password
-						// that we're being asked for, hence the username.
-						// Otherwise, we'll send the password
-						if (echo[i]) {
-							challengeResponse[i] = username;
-						} else {
-							challengeResponse[i] = password != null ? String.valueOf(password) : null;
+			return sshConnection.authenticateWithKeyboardInteractive(
+				username,
+				new InteractiveCallback() {
+					@Override
+					public String[] replyToChallenge(
+						String name,
+						String instruction,
+						int numPrompts,
+						String[] prompt,
+						boolean[] echo
+					) throws Exception {
+						// Prepare responses to the challenges
+						String[] challengeResponse = new String[numPrompts];
+						for (int i = 0; i < numPrompts; i++) {
+							// If we're told the input can be displayed (echoed),
+							// we'll assume this is not a password
+							// that we're being asked for, hence the username.
+							// Otherwise, we'll send the password
+							if (echo[i]) {
+								challengeResponse[i] = username;
+							} else {
+								challengeResponse[i] = password != null ? String.valueOf(password) : null;
+							}
 						}
+						return challengeResponse;
 					}
-					return challengeResponse;
 				}
-			});
+			);
 		}
 
 		// If none of the above methods are available, just quit
@@ -293,7 +299,6 @@ public class SshClient implements AutoCloseable {
 	 * @throws IOException
 	 */
 	public String readFileAttributes(String filePath) throws IOException {
-
 		// Sanity check
 		checkIfAuthenticated();
 
@@ -318,13 +323,20 @@ public class SshClient implements AutoCloseable {
 		// Build the result in the same format as the PSL function file()
 		StringBuilder pslFileResult = new StringBuilder();
 		pslFileResult
-			.append(fileAttributes.mtime.toString()).append("\t")
-			.append(fileAttributes.atime.toString()).append("\t-\t")
-			.append(Integer.toString(fileAttributes.permissions & 0000777, 8)).append("\t")
-			.append(fileAttributes.size.toString()).append("\t-\t")
-			.append(fileType).append("\t")
-			.append(fileAttributes.uid.toString()).append("\t")
-			.append(fileAttributes.gid.toString()).append("\t")
+			.append(fileAttributes.mtime.toString())
+			.append("\t")
+			.append(fileAttributes.atime.toString())
+			.append("\t-\t")
+			.append(Integer.toString(fileAttributes.permissions & 0000777, 8))
+			.append("\t")
+			.append(fileAttributes.size.toString())
+			.append("\t-\t")
+			.append(fileType)
+			.append("\t")
+			.append(fileAttributes.uid.toString())
+			.append("\t")
+			.append(fileAttributes.gid.toString())
+			.append("\t")
 			.append(sftpClient.canonicalPath(filePath));
 
 		// Deallocate
@@ -334,24 +346,30 @@ public class SshClient implements AutoCloseable {
 		return pslFileResult.toString();
 	}
 
-	private StringBuilder listSubDirectory(SFTPv3Client sftpClient, String remoteDirectoryPath, Pattern fileMaskPattern, boolean includeSubfolders, Integer depth, StringBuilder resultBuilder)
-			throws IOException {
-
+	private StringBuilder listSubDirectory(
+		SFTPv3Client sftpClient,
+		String remoteDirectoryPath,
+		Pattern fileMaskPattern,
+		boolean includeSubfolders,
+		Integer depth,
+		StringBuilder resultBuilder
+	) throws IOException {
 		if (depth <= 15) {
 			@SuppressWarnings("unchecked")
 			Vector<SFTPv3DirectoryEntry> pathContents = sftpClient.ls(remoteDirectoryPath);
 
 			// Fix the remoteDirectoryPath (without the last '/')
-			if (remoteDirectoryPath.endsWith("/"))
+			if (remoteDirectoryPath.endsWith("/")) {
 				remoteDirectoryPath = remoteDirectoryPath.substring(0, remoteDirectoryPath.lastIndexOf("/"));
+			}
 
 			depth++;
 			for (SFTPv3DirectoryEntry file : pathContents) {
-
 				String filename = file.filename.trim();
 
-				if (filename.equals(".") || filename.equals(".."))
+				if (filename.equals(".") || filename.equals("..")) {
 					continue;
+				}
 
 				SFTPv3FileAttributes fileAttributes = file.attributes;
 				String filePath = remoteDirectoryPath + "/" + filename;
@@ -361,10 +379,15 @@ public class SshClient implements AutoCloseable {
 					continue;
 				}
 
-				if (((fileAttributes.permissions & 0100000) == 0100000) || ((fileAttributes.permissions & 0060000) == 0060000) || ((fileAttributes.permissions & 0020000) == 0020000)
-						|| ((fileAttributes.permissions & 0140000) == 0140000)) {
+				// CHECKSTYLE:OFF
+				if (
+					((fileAttributes.permissions & 0100000) == 0100000) ||
+					((fileAttributes.permissions & 0060000) == 0060000) ||
+					((fileAttributes.permissions & 0020000) == 0020000) ||
+					((fileAttributes.permissions & 0140000) == 0140000)
+				) {
 					// Regular/Block/Character/Socket files
-					Matcher m = fileMaskPattern.matcher(filename);
+					final Matcher m = fileMaskPattern.matcher(filename);
 					if (m.find()) {
 						resultBuilder
 							.append(filePath)
@@ -372,16 +395,18 @@ public class SshClient implements AutoCloseable {
 							.append(fileAttributes.mtime.toString())
 							.append(";")
 							.append(fileAttributes.size.toString())
-							.append("\n")
-						;
+							.append("\n");
 					}
 					continue;
 				}
+				// CHECKSTYLE:ON
 
 				if ((fileAttributes.permissions & 0040000) == 0040000) {
 					// Directory
-					if (includeSubfolders)
-						resultBuilder = listSubDirectory(sftpClient, filePath, fileMaskPattern, includeSubfolders, depth, resultBuilder);
+					if (includeSubfolders) {
+						resultBuilder =
+							listSubDirectory(sftpClient, filePath, fileMaskPattern, includeSubfolders, depth, resultBuilder);
+					}
 				}
 			}
 		}
@@ -401,8 +426,8 @@ public class SshClient implements AutoCloseable {
 	 * @throws IOException When something bad happens while communicating with the remote host
 	 * @throws IllegalStateException If called while not yet connected
 	 */
-	public String listFiles(String remoteDirectoryPath, String regExpFileMask, boolean includeSubfolders) throws IOException {
-
+	public String listFiles(String remoteDirectoryPath, String regExpFileMask, boolean includeSubfolders)
+		throws IOException {
 		checkIfAuthenticated();
 
 		// Create an SFTP Client
@@ -445,7 +470,6 @@ public class SshClient implements AutoCloseable {
 	 *             when the session hasn't been properly authenticated first
 	 */
 	public String readFile(String remoteFilePath, Long readOffset, Integer readSize) throws IOException {
-
 		checkIfAuthenticated();
 
 		// Create an SFTP Client
@@ -453,8 +477,9 @@ public class SshClient implements AutoCloseable {
 
 		// Where do we read from (offset)?
 		long offset = 0; // from the beginning by default
-		if (readOffset != null)
+		if (readOffset != null) {
 			offset = readOffset; // use the set offset
+		}
 
 		// Open the remote file
 		SFTPv3FileHandle handle = sftpClient.openFileRO(remoteFilePath);
@@ -483,7 +508,6 @@ public class SshClient implements AutoCloseable {
 
 		// Loop until there is nothing else to read
 		while (remainingBytes > 0) {
-
 			// Read by chunk of 8192 bytes. However, if there is less to read,
 			// well, read less.
 			if (remainingBytes < READ_BUFFER_SIZE) {
@@ -528,7 +552,6 @@ public class SshClient implements AutoCloseable {
 	 * @throws IllegalStateException when not connected and authenticated yet
 	 */
 	public void removeFile(String[] remoteFilePathArray) throws IOException {
-
 		checkIfAuthenticated();
 
 		// Create an SFTP Client
@@ -540,7 +563,6 @@ public class SshClient implements AutoCloseable {
 			for (String remoteFilePath : remoteFilePathArray) {
 				sftpClient.rm(remoteFilePath);
 			}
-
 		} catch (IOException e) {
 			// Okay, we got an issue here with the SFTP client
 			// We're going to try again but with a good old "rm" command...
@@ -560,13 +582,11 @@ public class SshClient implements AutoCloseable {
 				}
 			}
 		} finally {
-
 			// Close the SFTP client
 			if (sftpClient != null) {
 				sftpClient.close();
 			}
 		}
-
 	}
 
 	/**
@@ -587,6 +607,7 @@ public class SshClient implements AutoCloseable {
 	 *
 	 */
 	public static class CommandResult {
+
 		/**
 		 * Whether the command was successful or not
 		 */
@@ -608,7 +629,6 @@ public class SshClient implements AutoCloseable {
 		 * The result of the command (stdout and stderr is merged into result)
 		 */
 		public String result = "";
-
 	}
 
 	/**
@@ -633,7 +653,6 @@ public class SshClient implements AutoCloseable {
 	 * @throws IOException when there is a problem while communicating with the remote system
 	 */
 	public CommandResult executeCommand(String command, int timeout) throws IOException {
-
 		openSession();
 
 		InputStream stdout = sshSession.getStdout();
@@ -645,8 +664,7 @@ public class SshClient implements AutoCloseable {
 		CommandResult commandResult = new CommandResult();
 
 		// Output to a byte stream
-		try (final ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-
+		try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
 			// Time to be remembered
 			long startTime = System.currentTimeMillis();
 			long timeoutTime;
@@ -662,10 +680,12 @@ public class SshClient implements AutoCloseable {
 
 			int waitForCondition = 0;
 			long currentTime;
-			while (!hasSessionClosed(waitForCondition) &&
-					!hasEndOfFileSession(waitForCondition) &&
-					((currentTime = System.currentTimeMillis()) < timeoutTime)) {
-
+			// CHECKSTYLE:OFF
+			while (
+				!hasSessionClosed(waitForCondition) &&
+				!hasEndOfFileSession(waitForCondition) &&
+				((currentTime = System.currentTimeMillis()) < timeoutTime)
+			) {
 				// Wait for new data (timeout = 5 seconds)
 				waitForCondition = waitForNewData(Math.min(timeoutTime - currentTime, 5000));
 
@@ -677,21 +697,18 @@ public class SshClient implements AutoCloseable {
 				if (hasStderrData(waitForCondition)) {
 					transferAllBytes(stderr, output);
 				}
-
 			}
+			// CHECKSTYLE:ON
 
 			// What time is it?
 			currentTime = System.currentTimeMillis();
 			if (currentTime >= timeoutTime) {
-
 				// If we exceeded the timeout, we're not successful
 
 				// Build the "timed out" result
 				commandResult.success = false;
 				commandResult.result = "Timeout (" + timeout / 1000 + " seconds)";
-
 			} else {
-
 				// We completed in time
 
 				// Execution time (in seconds)
@@ -705,7 +722,6 @@ public class SshClient implements AutoCloseable {
 
 				// Stringify the stdout stream
 				commandResult.result = new String(output.toByteArray(), charset);
-
 			}
 		}
 
@@ -715,7 +731,7 @@ public class SshClient implements AutoCloseable {
 
 	/**
 	 * Starts an interactive session.
-	 * 
+	 *
 	 * @param in Where the input is coming from (typically System.in)
 	 * @param out Where the output has to go (e.g. System.out)
 	 * @throws IllegalStateException when not connected and authenticated
@@ -723,7 +739,6 @@ public class SshClient implements AutoCloseable {
 	 * @throws InterruptedException when a thread is interrupted
 	 */
 	public void interactiveSession(InputStream in, OutputStream out) throws IOException, InterruptedException {
-
 		openSession();
 
 		openTerminal();
@@ -757,7 +772,6 @@ public class SshClient implements AutoCloseable {
 
 		int waitForCondition = 0;
 		while (!hasSessionClosed(waitForCondition) && !hasEndOfFileSession(waitForCondition)) {
-
 			// Wait for new data (timeout = 5 seconds)
 			waitForCondition = waitForNewData(5000L);
 
@@ -769,7 +783,6 @@ public class SshClient implements AutoCloseable {
 			if (hasStderrData(waitForCondition)) {
 				transferAllBytes(stderr, out);
 			}
-
 		}
 
 		// Attempt to interrupt the stdinPipeThread thread
@@ -788,8 +801,8 @@ public class SshClient implements AutoCloseable {
 	 * @param fileMode
 	 * @throws IOException
 	 */
-	public void scp(String localFilePath, String remoteFilename, String remoteDirectory, String fileMode) throws IOException {
-
+	public void scp(String localFilePath, String remoteFilename, String remoteDirectory, String fileMode)
+		throws IOException {
 		checkIfAuthenticated();
 
 		// Create the SCP client
@@ -797,7 +810,6 @@ public class SshClient implements AutoCloseable {
 
 		// Copy the file
 		scpClient.put(localFilePath, remoteFilename, remoteDirectory, fileMode);
-
 	}
 
 	/**
@@ -806,7 +818,6 @@ public class SshClient implements AutoCloseable {
 	 * @throws IOException When an I/O error occurred.
 	 */
 	public void openSession() throws IOException {
-
 		checkIfConnected();
 		checkIfAuthenticated();
 
@@ -820,13 +831,12 @@ public class SshClient implements AutoCloseable {
 	 *
 	 * @throws IOException When an I/O error occurred.
 	 */
-	public void openTerminal() throws IOException  {
-
+	public void openTerminal() throws IOException {
 		checkIfConnected();
 		checkIfAuthenticated();
 		checkIfSessionOpened();
 
-		getSshSession().requestPTY("dumb", 10000, 24, 640, 480, new byte[] {53, 0, 0, 0, 0, 0});
+		getSshSession().requestPTY("dumb", 10000, 24, 640, 480, new byte[] { 53, 0, 0, 0, 0, 0 });
 		getSshSession().startShell();
 	}
 
@@ -837,7 +847,6 @@ public class SshClient implements AutoCloseable {
 	 * @throws IOException When an I/O error occurred.
 	 */
 	public void write(final String text) throws IOException {
-
 		if (text == null || text.isEmpty()) {
 			return;
 		}
@@ -880,7 +889,6 @@ public class SshClient implements AutoCloseable {
 	 * @throws IOException When an I/O error occurred.
 	 */
 	public Optional<String> read(final int size, final int timeout) throws IOException {
-
 		Utils.checkArgumentNotZeroOrNegative(timeout, "timeout");
 
 		checkIfConnected();
@@ -894,8 +902,7 @@ public class SshClient implements AutoCloseable {
 		Utils.checkNonNullField(stdout, "stdout");
 		Utils.checkNonNullField(stderr, "stderr");
 
-		try (final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-
+		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
 			// Wait for new data
 			final int waitForCondition = waitForNewData(timeout * 1000L);
 
@@ -916,9 +923,9 @@ public class SshClient implements AutoCloseable {
 				transferBytes(stderr, byteArrayOutputStream, size - stdoutRead);
 			}
 
-			return stdoutData || stderrData ?
-					Optional.of(new String(byteArrayOutputStream.toByteArray(), charset)) :
-						Optional.empty();
+			return stdoutData || stderrData
+				? Optional.of(new String(byteArrayOutputStream.toByteArray(), charset))
+				: Optional.empty();
 		}
 	}
 
@@ -984,11 +991,9 @@ public class SshClient implements AutoCloseable {
 	 */
 	int waitForNewData(final long timeout) {
 		return sshSession.waitForCondition(
-				ChannelCondition.STDOUT_DATA |
-				ChannelCondition.STDERR_DATA |
-				ChannelCondition.EOF |
-				ChannelCondition.CLOSED,
-				timeout);
+			ChannelCondition.STDOUT_DATA | ChannelCondition.STDERR_DATA | ChannelCondition.EOF | ChannelCondition.CLOSED,
+			timeout
+		);
 	}
 
 	/**
@@ -1026,10 +1031,7 @@ public class SshClient implements AutoCloseable {
 	 * @return The total number of copy bytes.
 	 * @throws IOException When an I/O error occurred.
 	 */
-	static int transferAllBytes(
-			final InputStream inputStream,
-			final OutputStream outputStream) throws IOException {
-
+	static int transferAllBytes(final InputStream inputStream, final OutputStream outputStream) throws IOException {
 		return transferBytes(inputStream, outputStream, -1);
 	}
 
@@ -1042,19 +1044,15 @@ public class SshClient implements AutoCloseable {
 	 * @return The total number of copy bytes.
 	 * @throws IOException When an I/O error occurred.
 	 */
-	static int transferBytes(
-			final InputStream inputStream,
-			final OutputStream outputStream,
-			final int size) throws IOException {
-
+	static int transferBytes(final InputStream inputStream, final OutputStream outputStream, final int size)
+		throws IOException {
 		final int bufferSize = size > 0 && size < READ_BUFFER_SIZE ? size : READ_BUFFER_SIZE;
 		final byte[] buffer = new byte[bufferSize];
 
 		int total = 0;
 		int bytesRead = 0;
 
-		while(inputStream.available() > 0 && (bytesRead = inputStream.read(buffer)) > 0) {
-
+		while (inputStream.available() > 0 && (bytesRead = inputStream.read(buffer)) > 0) {
 			final int bytesCopy = Math.min(bytesRead, READ_BUFFER_SIZE);
 
 			outputStream.write(Arrays.copyOf(buffer, bytesCopy));

@@ -7,7 +7,6 @@
 		<version>2</version>
 	</parent>
 
-	<groupId>org.metricshub</groupId>
 	<artifactId>ssh-java</artifactId>
 	<name>SSH Java Client</name>
 	<version>1.0.03-SNAPSHOT</version>
@@ -56,8 +55,8 @@
 			</roles>
 		</developer>
 		<developer>
-			<name>Kawtar Bakour (@KawtarBK9)</name>
-			<email>kawtar@sentrysoftware.com</email>
+			<name>Safae Ajib (@SafaeAJ)</name>
+			<email>safae@sentrysoftware.com</email>
 			<roles>
 				<role>maintainer</role>
 			</roles>
@@ -65,6 +64,13 @@
 		<developer>
 			<name>Elyes Cherfa (@CherfaElyes)</name>
 			<email>elyes@sentrysoftware.com</email>
+			<roles>
+				<role>maintainer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Mohamed Maalej (@MedMaalej)</name>
+			<email>maalej@sentrysoftware.com</email>
 			<roles>
 				<role>maintainer</role>
 			</roles>
@@ -111,11 +117,41 @@
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
-			<artifactId>mockito-inline</artifactId>
-			<version>5.2.0</version>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>5.16.1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+
+			<!-- Prettier -->
+			<plugin>
+				<groupId>com.hubspot.maven.plugins</groupId>
+				<artifactId>prettier-maven-plugin</artifactId>
+				<version>0.21</version>
+				<configuration>
+					<prettierJavaVersion>2.5.0</prettierJavaVersion>
+					<ignoreConfigFile>false</ignoreConfigFile>
+					<ignoreEditorConfig>false</ignoreEditorConfig>
+					<inputGlobs>
+						<inputGlob>src/main/java/**/*.java</inputGlob>
+						<inputGlob>src/test/java/**/*.java</inputGlob>
+					</inputGlobs>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+	
+		</plugins>
+	</build>
 
 	<reporting>
 		<plugins>
