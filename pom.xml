@@ -9,7 +9,7 @@
 
 	<artifactId>ssh-java</artifactId>
 	<name>SSH Java Client</name>
-	<version>1.0.03-SNAPSHOT</version>
+	<version>1.0.04-SNAPSHOT</version>
 	<description>SSH Cilent Library for Java</description>
 
 	<organization>
@@ -84,7 +84,7 @@
 
 		<!-- Reproducible Build -->
 		<!-- See https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
-		<project.build.outputTimestamp>2024-07-16T15:13:36Z</project.build.outputTimestamp>
+		<project.build.outputTimestamp>2025-04-03T13:15:16Z</project.build.outputTimestamp>
 	</properties>
 
 	<dependencyManagement>
